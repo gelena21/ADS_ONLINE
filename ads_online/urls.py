@@ -12,3 +12,13 @@ urlpatterns = [
     path('reviews/', ReviewListCreateView.as_view(), name='review-list'),
     path('reviews/<int:pk>/', ReviewDetailView.as_view(), name='review-detail'),
 ] + router.urls
+
+"""
+urlpatterns содержит маршруты для приложения ads_online.
+
+Маршруты:
+- 'ads/': Отображает список объявлений и позволяет создавать новые объявления.
+- 'ads/<int:pk>/': Отображает подробности, обновляет или удаляет объявление по его ID.
+- 'reviews/': Отображает список отзывов и позволяет создавать новые отзывы.
+- 'reviews/<int:pk>/': Отображает подробности, обновляет или удаляет отзыв по его ID.
+"""

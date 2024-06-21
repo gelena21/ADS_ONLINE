@@ -6,8 +6,14 @@ NULLABLE = {'blank': True, 'null': True}
 
 
 class CustomUserManager(BaseUserManager):
-    """ Кастомная модель пользователя """
+    """
+    Кастомный менеджер для пользовательской модели.
+    """
+
     def create_user(self, email, first_name, password=None, **extra_fields):
+        """
+        Создает и возвращает пользователя с указанным email и паролем.
+        """
         if not email:
             raise ValueError("User must have an email")
         email = self.normalize_email(email)
@@ -17,6 +23,9 @@ class CustomUserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, first_name, password=None, **extra_fields):
+        """
+        Создает и возвращает суперпользователя с указанным email и паролем.
+        """
         user = self.create_user(email, first_name=first_name, password=password, **extra_fields)
         user.is_active = True
         user.is_admin = True
@@ -26,7 +35,9 @@ class CustomUserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    """ Описание модели пользователя """
+    """
+    Кастомная модель пользователя.
+    """
     username = None
     first_name = models.CharField(max_length=150, verbose_name='Имя')
     last_name = models.CharField(max_length=150, verbose_name='Фамилия')
@@ -49,13 +60,22 @@ class User(AbstractBaseUser):
         return self.is_admin
 
     def has_perm(self, perm, obj=None):
+        """
+        Проверяет, имеет ли пользователь данное разрешение.
+        """
         return self.is_admin
 
     def has_module_perms(self, app_label):
+        """
+        Проверяет, имеет ли пользователь разрешения на модуль.
+        """
         return self.is_admin
 
     @property
     def is_admin(self):
+        """
+        Проверяет, является ли пользователь администратором.
+        """
         return self.role == 'ADMIN'
 
     def __str__(self):
@@ -64,4 +84,3 @@ class User(AbstractBaseUser):
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
-        
