@@ -2,7 +2,7 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
 
-NULLABLE = {'blank': True, 'null': True}
+NULLABLE = {"blank": True, "null": True}
 
 
 class CustomUserManager(BaseUserManager):
@@ -26,10 +26,12 @@ class CustomUserManager(BaseUserManager):
         """
         Создает и возвращает суперпользователя с указанным email и паролем.
         """
-        user = self.create_user(email, first_name=first_name, password=password, **extra_fields)
+        user = self.create_user(
+            email, first_name=first_name, password=password, **extra_fields
+        )
         user.is_active = True
         user.is_admin = True
-        user.role = 'ADMIN'
+        user.role = "ADMIN"
         user.save(using=self._db)
         return user
 
@@ -38,12 +40,13 @@ class User(AbstractBaseUser):
     """
     Кастомная модель пользователя.
     """
+
     username = None
-    first_name = models.CharField(max_length=150, verbose_name='Имя')
-    last_name = models.CharField(max_length=150, verbose_name='Фамилия')
-    role = models.CharField(max_length=150, verbose_name='Роль', **NULLABLE)
-    email = models.EmailField(unique=True, verbose_name='Почта')
-    phone = models.CharField(max_length=35, verbose_name='Телефон', **NULLABLE)
+    first_name = models.CharField(max_length=150, verbose_name="Имя")
+    last_name = models.CharField(max_length=150, verbose_name="Фамилия")
+    role = models.CharField(max_length=150, verbose_name="Роль", **NULLABLE)
+    email = models.EmailField(unique=True, verbose_name="Почта")
+    phone = models.CharField(max_length=35, verbose_name="Телефон", **NULLABLE)
     is_active = models.BooleanField(default=True)
 
     objects = CustomUserManager()
@@ -76,11 +79,11 @@ class User(AbstractBaseUser):
         """
         Проверяет, является ли пользователь администратором.
         """
-        return self.role == 'ADMIN'
+        return self.role == "ADMIN"
 
     def __str__(self):
         return f"{self.email}"
 
     class Meta:
-        verbose_name = 'Пользователь'
-        verbose_name_plural = 'Пользователи'
+        verbose_name = "Пользователь"
+        verbose_name_plural = "Пользователи"

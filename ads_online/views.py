@@ -1,11 +1,14 @@
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import generics, permissions
+from rest_framework import generics
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.permissions import AllowAny
+
 from ads_online.filters import AdFilter
 from ads_online.models import Ad, Review
 from ads_online.paginations import AdPagination
 from ads_online.permissions import IsOwnerOrAdmin
 from ads_online.serializers import AdSerializer, ReviewSerializer
+
 
 class AdListCreateView(generics.ListCreateAPIView):
     """
@@ -19,9 +22,10 @@ class AdListCreateView(generics.ListCreateAPIView):
     filter_backends (tuple): Кортеж классов фильтров.
     filter_class (FilterSet): Класс фильтра для модели Ad.
     """
+
     queryset = Ad.objects.all()
     serializer_class = AdSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [AllowAny]
     pagination_class = AdPagination
     filter_backends = (DjangoFilterBackend,)
     filter_class = AdFilter
@@ -35,6 +39,7 @@ class AdListCreateView(generics.ListCreateAPIView):
         """
         serializer.save(author=self.request.user)
 
+
 class AdDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
     Представление для отображения, обновления и удаления отдельного объявления.
@@ -44,6 +49,7 @@ class AdDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class (Serializer): Класс сериализатора для модели Ad.
     permission_classes (list): Список классов разрешений.
     """
+
     queryset = Ad.objects.all()
     serializer_class = AdSerializer
     permission_classes = [IsOwnerOrAdmin]
@@ -58,8 +64,11 @@ class AdDetailView(generics.RetrieveUpdateDestroyAPIView):
         Исключения:
         PermissionDenied: Если пользователь не автор объявления и не администратор.
         """
-        if self.request.user != serializer.instance.author and not self.request.user.is_staff:
-            raise PermissionDenied('У вас нет прав на внесение изменений')
+        if (
+            self.request.user != serializer.instance.author
+            and not self.request.user.is_staff
+        ):
+            raise PermissionDenied("У вас нет прав на внесение изменений")
         serializer.save()
 
     def perform_destroy(self, instance):
@@ -73,8 +82,9 @@ class AdDetailView(generics.RetrieveUpdateDestroyAPIView):
         PermissionDenied: Если пользователь не автор объявления и не администратор.
         """
         if self.request.user != instance.author and not self.request.user.is_staff:
-            raise PermissionDenied('У вас нет прав на удаление')
+            raise PermissionDenied("У вас нет прав на удаление")
         instance.delete()
+
 
 class ReviewListCreateView(generics.ListCreateAPIView):
     """
@@ -85,6 +95,7 @@ class ReviewListCreateView(generics.ListCreateAPIView):
     serializer_class (Serializer): Класс сериализатора для модели Review.
     permission_classes (list): Список классов разрешений.
     """
+
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [IsOwnerOrAdmin]
@@ -98,6 +109,7 @@ class ReviewListCreateView(generics.ListCreateAPIView):
         """
         serializer.save(author=self.request.user)
 
+
 class ReviewDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
     Представление для отображения, обновления и удаления отдельного отзыва.
@@ -107,6 +119,7 @@ class ReviewDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class (Serializer): Класс сериализатора для модели Review.
     permission_classes (list): Список классов разрешений.
     """
+
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [IsOwnerOrAdmin]
@@ -121,8 +134,11 @@ class ReviewDetailView(generics.RetrieveUpdateDestroyAPIView):
         Исключения:
         PermissionDenied: Если пользователь не автор отзыва и не администратор.
         """
-        if self.request.user != serializer.instance.author and not self.request.user.is_staff:
-            raise PermissionDenied('У вас нет прав на внесение изменений')
+        if (
+            self.request.user != serializer.instance.author
+            and not self.request.user.is_staff
+        ):
+            raise PermissionDenied("У вас нет прав на внесение изменений")
         serializer.save()
 
     def perform_destroy(self, instance):
@@ -136,5 +152,5 @@ class ReviewDetailView(generics.RetrieveUpdateDestroyAPIView):
         PermissionDenied: Если пользователь не автор отзыва и не администратор.
         """
         if self.request.user != instance.author and not self.request.user.is_staff:
-            raise PermissionDenied('У вас нет прав на удаление')
+            raise PermissionDenied("У вас нет прав на удаление")
         instance.delete()

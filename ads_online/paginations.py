@@ -10,6 +10,7 @@ class AdPagination(PageNumberPagination):
     page_size_query_param (str): Параметр запроса для указания количества объектов на странице.
     max_page_size (int): Максимальное количество объектов на странице.
     """
+
     page_size = 4
-    page_size_query_param = 'page_size'
+    page_size_query_param = "page_size"
     max_page_size = 4

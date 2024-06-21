@@ -1,4 +1,5 @@
 from rest_framework import serializers
+
 from ads_online.models import Ad, Review
 
 
@@ -9,18 +10,27 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Review
-        fields = '__all__'
+        fields = "__all__"
 
 
 class AdSerializer(serializers.ModelSerializer):
     """
     Сериализатор для модели Ad, включающий связанные отзывы.
     """
+
     reviews = serializers.SerializerMethodField()
 
     class Meta:
         model = Ad
-        fields = ['id', 'title', 'price', 'description', 'author', 'created_at', 'reviews']
+        fields = [
+            "id",
+            "title",
+            "price",
+            "description",
+            "author",
+            "created_at",
+            "reviews",
+        ]
 
     def get_reviews(self, obj):
         """
@@ -45,7 +55,7 @@ class AdSerializer(serializers.ModelSerializer):
         Возвращает:
         Ad: Созданный экземпляр модели Ad.
         """
-        reviews_data = validated_data.pop('reviews', None)
+        reviews_data = validated_data.pop("reviews", None)
         ad = Ad.objects.create(**validated_data)
         if reviews_data:
             for review_data in reviews_data:
