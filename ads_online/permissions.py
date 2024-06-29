@@ -18,7 +18,7 @@ class IsOwnerOrAdmin(permissions.BasePermission):
         Возвращает:
         bool: True, если пользователь имеет доступ, иначе False.
         """
-        if request.user == obj.user:
+        if request.user == obj.author:
             return True
         return False
 
